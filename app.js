@@ -98,10 +98,20 @@
         note.textContent = section.note;
         wrap.append(note);
       }
+      let readingBlock;
+      let blockIndex = 0;
       section.paragraphs.forEach(value => {
+        const isSubheading = value.length < 130 && /^\d{1,2}[.)]\s+/.test(value);
+        if (!readingBlock || isSubheading || readingBlock.childElementCount >= 7) {
+          readingBlock = document.createElement('div');
+          readingBlock.className = `reading-block reading-block-${blockIndex % 3 + 1}`;
+          blockIndex += 1;
+          wrap.append(readingBlock);
+        }
         const paragraph = document.createElement('p');
+        if (isSubheading) paragraph.className = 'reading-subheading';
         paragraph.textContent = value;
-        wrap.append(paragraph);
+        readingBlock.append(paragraph);
       });
       reading.append(wrap);
     });
