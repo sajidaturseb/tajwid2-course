@@ -194,10 +194,14 @@
     $('scoreText').textContent = `${right.reduce((a, b) => a + b, 0)} / ${current.questions.length}`;
     $('resultText').textContent = `${$('studentName').value.trim()} · ${$('studentGroup').value.trim()}. Җавапларны карап, дәресне кабат үтәргә мөмкин.`;
     $('sendResultBtn').classList.add('hidden');
-    $('sendInstruction').innerHTML = '<strong>Сез тестны үттегез.</strong> Нәтиҗә укытучы журналына җибәрелә…';
+    $('sendInstruction').textContent = '';
+    $('sendInstruction').classList.add('pending');
+    $('sendInstruction').setAttribute('aria-busy', 'true');
     $('resultSendNote').textContent = '';
     show('result');
     if (localPreview) {
+      $('sendInstruction').classList.remove('pending');
+      $('sendInstruction').setAttribute('aria-busy', 'false');
       $('sendInstruction').innerHTML = '<strong>Бу — карау өчен үрнәк.</strong> Әлегә нәтиҗә укытучы журналына җибәрелми.';
     } else {
       void sendResult();
@@ -289,8 +293,10 @@
     if (sent) return;
     const button = $('sendResultBtn');
     button.disabled = true;
-    button.textContent = 'Җибәрелә…';
-    $('resultSendNote').textContent = 'Нәтиҗә җибәрелә, бераз көтегез.';
+    $('sendInstruction').textContent = '';
+    $('sendInstruction').classList.add('pending');
+    $('sendInstruction').setAttribute('aria-busy', 'true');
+    $('resultSendNote').textContent = '';
     const score = current.questions.reduce((sum, question, index) => sum + Number(quizAnswers[index] === question.a), 0);
     const payload = {
       attemptId,
@@ -309,24 +315,36 @@
       }))
     };
     try {
-      const response = await fetch(resultsEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+      let response;
+      try {
+        response = await fetch(resultsEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+      } finally {
+        clearTimeout(timer);
+      }
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || 'send_failed');
       sent = true;
       button.textContent = 'Җибәрелде';
-      $('sendInstruction').innerHTML = '<strong>Нәтиҗә җибәрелде.</strong> Ул укытучы журналында сакланды.';
-      $('resultSendNote').textContent = 'Нәтиҗә укытучы журналына җибәрелде. Башка бернәрсә эшләргә кирәкми.';
+      $('sendInstruction').classList.remove('pending');
+      $('sendInstruction').setAttribute('aria-busy', 'false');
+      $('sendInstruction').innerHTML = '<strong>Эшегез укытучы журналына теркәлде.</strong>';
+      $('resultSendNote').textContent = 'Башка бернәрсә эшләргә кирәкми.';
       button.classList.add('hidden');
     } catch {
       button.disabled = false;
       button.textContent = 'Кабат җибәрергә';
       button.classList.remove('hidden');
-      $('sendInstruction').innerHTML = '<strong>Нәтиҗә әлегә җибәрелмәде.</strong> Кабат җибәрү төймәсенә басыгыз.';
-      $('resultSendNote').textContent = 'Нәтиҗә җибәрелмәде. Интернетны тикшереп, кабат басыгыз.';
+      $('sendInstruction').classList.remove('pending');
+      $('sendInstruction').setAttribute('aria-busy', 'false');
+      $('sendInstruction').innerHTML = '<strong>Эшегез журналга теркәлмәде. Кабат җибәрергә кирәк.</strong>';
+      $('resultSendNote').textContent = 'Түбәндәге «Кабат җибәрергә» төймәсенә басыгыз.';
     }
   }
   $('sendResultBtn').addEventListener('click', sendResult);
