@@ -194,12 +194,14 @@
     $('scoreText').textContent = `${right.reduce((a, b) => a + b, 0)} / ${current.questions.length}`;
     $('resultText').textContent = `${$('studentName').value.trim()} · ${$('studentGroup').value.trim()}. Җавапларны карап, дәресне кабат үтәргә мөмкин.`;
     $('sendResultBtn').classList.add('hidden');
+    $('retryBtn').classList.add('hidden');
     $('sendInstruction').textContent = '';
     $('sendInstruction').classList.add('pending');
     $('sendInstruction').setAttribute('aria-busy', 'true');
     $('resultSendNote').textContent = '';
     show('result');
     if (localPreview) {
+      $('retryBtn').classList.remove('hidden');
       $('sendInstruction').classList.remove('pending');
       $('sendInstruction').setAttribute('aria-busy', 'false');
       $('sendInstruction').innerHTML = '<strong>Бу — карау өчен үрнәк.</strong> Әлегә нәтиҗә укытучы журналына җибәрелми.';
@@ -337,6 +339,7 @@
       $('sendInstruction').innerHTML = '<strong>Эшегез укытучы журналына теркәлде.</strong>';
       $('resultSendNote').textContent = 'Башка бернәрсә эшләргә кирәкми.';
       button.classList.add('hidden');
+      $('retryBtn').classList.remove('hidden');
     } catch {
       button.disabled = false;
       button.textContent = 'Кабат җибәрергә';
