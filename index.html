@@ -75,11 +75,15 @@
     #sendInstruction.pending::before { content: ''; display: inline-block; width: 1.25rem; height: 1.25rem; border: 3px solid #d5d4cb; border-top-color: var(--forest); border-radius: 50%; animation: submission-spin .8s linear infinite; }
     @keyframes submission-spin { to { transform: rotate(360deg); } }
     #sendResultBtn:not(.hidden) { font-size: 19px; }
+    .language-switch{display:flex;gap:5px;margin-left:auto}
+    .language-switch button{border:1px solid #f0cadb;border-radius:9px;padding:8px 12px;background:transparent;color:#fff;font-weight:800}
+    .language-switch button[aria-pressed="true"]{background:#ffe9f2;color:#713454}
+    @media(max-width:520px){.language-switch{gap:3px}.language-switch button{padding:7px 8px;font-size:13px}}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header class="top"><div class="brand"><span class="mark" aria-hidden="true">✦</span><div><strong>Тәҗвид 2</strong><small>25 ДӘРЕС · ТЕОРИЯ ҺӘМ ТЕСТ</small></div></div><span class="pill" id="coursePill">25 дәрес</span></header>
+    <header class="top"><div class="brand"><span class="mark" aria-hidden="true">✦</span><div><strong>Тәҗвид 2</strong><small>25 ДӘРЕС · ТЕОРИЯ ҺӘМ ТЕСТ</small></div></div><div class="language-switch" id="languageSwitch" aria-label="Тел / Язык"><button type="button" data-lang="tt">Татарча</button><button type="button" data-lang="ru">Русский</button></div><span class="pill" id="coursePill">25 дәрес</span></header>
     <div class="progress hidden" id="progress"><div class="progress-line"><span id="stageName"></span><span id="stageCount"></span></div><div class="track"><div class="fill" id="stageFill"></div></div></div>
     <main>
       <section id="home"><div class="grid"><div><p class="eyebrow">Тәҗвид 2</p><h1>Дәресләр һәм белемне тикшерү</h1><p class="lead">25 дәреснең һәркайсында теоретик нигезне укыгыз, биш сорау аша кабатлагыз һәм җиде сораулы тест үтегез. Әйтелешне укытучы дәрестә аерым тикшерә.</p><div class="cards" id="lessonCards"></div></div><aside class="teacher"><p class="eyebrow">Укытучы өчен</p><h2>Дәрес сылтамасы</h2><p>Дәресне һәм төркемне сайлап, укучыга әзер сылтама җибәрегез.</p><label class="field">Дәрес<select id="teacherLesson"></select></label><label class="field">Группа<select id="teacherGroup" aria-label="Группа"></select></label><button class="primary" id="copyLinkBtn" type="button">Сылтаманы күчерергә</button><p class="small" id="copyNote" role="status"></p><input class="hidden" id="teacherLink" type="text" readonly aria-label="Дәрес сылтамасы"><p><a href="teacher.html">Нәтиҗәләр журналы →</a></p></aside></div></section>
@@ -90,6 +94,6 @@
       <section id="result" class="hidden"><p class="eyebrow">Дәрес тәмам</p><h1>Мәә шәә Аллаһ, син дәресне үттең!</h1><p class="lead" id="resultText"></p><div class="score"><div><strong id="scoreText"></strong><span>Дөрес җавап</span></div></div><p class="result-instruction" id="sendInstruction" role="status" aria-live="polite"></p><div class="actions"><button class="primary hidden" id="sendResultBtn" type="button" aria-describedby="sendInstruction">Кабат җибәрергә</button><button class="secondary" id="retryBtn" type="button">Кабат үтәргә</button></div><p class="small" id="resultSendNote" role="status" aria-live="polite"></p></section>
     </main>
   </div>
-  <script src="lessons.js?v=4"></script><script src="app.js?v=journal-status-20261028b"></script>
+  <script src="lessons.js?v=4"></script><script src="lessons-ru.js?v=draft-20261029"></script><script src="app.js?v=ru-preview-20261029"></script>
 </body>
 </html>
